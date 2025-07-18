@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-zinc-900 text-white font-mono font-bold">
+    <div
+      class="w-full min-h-screen flex flex-col items-center px-4 sm:px-10 py-10 gap-10"
+    >
+      <!-- NavBar -->
+      <div
+        class="w-full flex flex-col sm:flex-row justify-between items-center gap-4"
+      >
+        <h1 class="text-3xl sm:text-4xl text-center sm:text-left">
+          <%= user.name %>'s Profile
+        </h1>
+        <span class="gap-4">
+          <a
+            class="mr-2 py-2 px-4 bg-orange-500 rounded-lg text-black hover:bg-orange-400 transition text-center"
+            href="/allpost"
+          >
+            All Post
+          </a>
+          <a
+            class="py-2 px-4 bg-orange-500 rounded-lg text-black hover:bg-orange-400 transition text-center"
+            href="/logout"
+          >
+            Log Out
+          </a>
+        </span>
+      </div>
+
+      <!-- Profile Card -->
+      <div
+        class="bg-zinc-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md text-center items-center"
+      >
+        <h2 class="text-2xl mb-4 text-orange-400"><%= user.name %></h2>
+
+        <!-- Profile Image with Pencil Icon -->
+        <div
+          class="relative w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden"
+        >
+          <img
+            class="w-full h-full object-cover"
+            src="/images/upload/<%= user.profilepic %>"
+            alt="Profile Picture"
+          />
+
+          <!-- Pencil Icon (fixed position inside image) -->
+          <a
+            href="/profile/upload"
+            class="absolute bottom-1 right-1 bg-zinc-700 hover:bg-orange-400 text-black p-1 rounded-full transition text-xs"
+            title="Edit Profile Picture"
+          >
+            ✏️
+          </a>
+        </div>
+
+        <ul class="text-left space-y-2">
+          <li>
+            <span class="text-gray-400">Username:</span> <%= user.username %>
+          </li>
+          <li><span class="text-gray-400">Email:</span> <%= user.email %></li>
+          <li><span class="text-gray-400">Age:</span> <%= user.age %></li>
+          <li><span class="text-gray-400">User ID:</span> <%= user._id %></li>
+        </ul>
+
+        <div class="mt-6">
+          <p class="text-sm text-gray-500">
+            📌 You have <%= user.posts.length %> post(s).
+          </p>
+        </div>
+      </div>
+
+      <!-- Create Post Section -->
+      <form
+        action="/post"
+        method="post"
+        class="flex flex-col w-full max-w-xl items-center gap-4 bg-zinc-800 p-6 sm:p-8 rounded-xl shadow-lg"
+      >
+        <h2 class="text-xl sm:text-2xl font-bold mb-2 text-white">
+          Create New Post
+        </h2>
+        <textarea
+          name="content"
+          placeholder="What's on your mind?"
+          class="w-full px-5 py-2 bg-transparent border-2 border-zinc-500 rounded-lg outline-none text-white resize-none"
+          rows="4"
+          required
+        ></textarea>
+        <input
+          type="submit"
+          value="Post"
+          class="bg-blue-500 hover:bg-white text-white hover:text-blue-500 font-bold px-5 py-2 rounded-lg w-full sm:w-auto cursor-pointer"
+        />
+      </form>
+
+      <!-- Posts Section -->
+      <h2 class="text-3xl sm:text-4xl font-bold text-white mt-16 mb-4">
+        Your Posts
+      </h2>
+
+      <div
+        class="postcontainer grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl"
+      >
+        <% user.posts.reverse().forEach((post) => { %>
+        <div class="post p-5 border-2 border-zinc-700 rounded-xl bg-zinc-800">
+          <h4 class="mb-2 text-blue-500 italic text-xl">
+            @<%= user.username %>
+          </h4>
+          <p class="break-words"><%= post.content %></p>
+          <div
+            class="btns flex flex-col sm:flex-row sm:justify-between mt-4 gap-2"
+          >
+            <span class="flex items-center gap-2">
+              <% if (!post.likes.indexOf(user._id)) { %>
+              <a
+                href="/like/<%= post._id %>"
+                class="text-sm bg-zinc-500 hover:bg-white text-white hover:text-black px-4 py-2 rounded-lg"
+              >
+                Unlike
+              </a>
+              <% } else { %>
+              <a
+                href="/like/<%= post._id %>"
+                class="text-sm bg-red-500 hover:bg-white text-white hover:text-black px-4 py-2 rounded-lg"
+              >
+                Like
+              </a>
+              <% } %>
+              <span class="text-zinc-400"><%= post?.likes.length %> ❤️</span>
+            </span>
+            <span class="flex gap-2">
+              <a
+                href="/edit/<%= post._id %>"
+                class="text-sm bg-yellow-500 hover:bg-orange-500 text-black hover:text-white px-4 py-2 rounded-lg"
+              >
+                Edit
+              </a>
+              <a
+                href="/delete/<%= post._id %>"
+                class="text-sm bg-red-700 hover:bg-white text-white hover:text-black px-4 py-2 rounded-lg"
+              >
+                Delete
+              </a>
+            </span>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <script src="./javascripts/script.js"></script>
+  </body>
+</html>
